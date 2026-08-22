@@ -38,9 +38,30 @@ npm start
 
 The `npm run build` command is reserved for the hosting workflow because it uses Bash-based verification scripts.
 
+## Deploy to Cloudflare Workers
+
+The portfolio deploys as the existing React/Vinext application. It does not
+need to be rewritten as static HTML and CSS.
+
+Authenticate your Cloudflare account once:
+
+```bash
+npm run cloudflare:login
+```
+
+Build and publish the Worker:
+
+```bash
+npm run deploy:cloudflare
+```
+
+After the first deployment succeeds, open the new Worker in Cloudflare and add
+`ajlalhaiderkhawaja.com` under Settings > Domains & Routes > Add > Custom Domain.
+Add `www.ajlalhaiderkhawaja.com` as well, or redirect it to the root domain.
+
 ## Personalise before hosting
 
-- Add the final public URL as `NEXT_PUBLIC_SITE_URL` when hosting.
+- The canonical public URL defaults to `https://ajlalhaiderkhawaja.com`.
 - Replace reconstructed case-study copy only with information safe for public use.
 - Keep client source code, internal data, API details and production screenshots private.
 

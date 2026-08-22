@@ -10,6 +10,8 @@
     "dev": "vite",
     "build": "bash scripts/build-verified.sh",
     "build:local": "vinext build",
+    "cloudflare:login": "wrangler login",
+    "deploy:cloudflare": "npm run build:local && wrangler deploy --config dist/server/wrangler.json",
     "start": "vinext start",
     "test": "npm run build && node --test tests/rendered-html.test.mjs",
     "lint": "bash scripts/sites-env.sh -- eslint . --ignore-pattern dist --ignore-pattern .next",
