@@ -5,6 +5,7 @@ import type { MouseEvent as ReactMouseEvent } from "react";
 import ThreeScene from "./three-scene";
 
 type ProjectCategory = "Healthcare" | "Government" | "Enterprise" | "R&D";
+type ProjectFilter = "All" | ProjectCategory;
 
 type Project = {
   id: string;
@@ -89,7 +90,7 @@ const projects: Project[] = [
   {
     id: "ocr",
     number: "06",
-    title: "Private OCR in the browser",
+    title: "Client-side Cheque OCR",
     client: "Engineering R&D",
     category: "R&D",
     summary: "A privacy-focused cheque experiment combining perspective correction, image preprocessing and client-side OCR.",
@@ -237,7 +238,7 @@ function ProofLab() {
 
 export default function Portfolio() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [filter, setFilter] = useState<"All" | ProjectCategory>("All");
+  const [filter, setFilter] = useState<ProjectFilter>("All");
   const [activeProjectId, setActiveProjectId] = useState("seha");
   const [wordIndex, setWordIndex] = useState(0);
   const [copied, setCopied] = useState(false);
@@ -271,6 +272,21 @@ export default function Portfolio() {
 
   const visibleProjects = useMemo(() => filter === "All" ? projects : projects.filter((project) => project.category === filter), [filter]);
   const activeProject = projects.find((project) => project.id === activeProjectId) ?? projects[0];
+
+  const changeFilter = (nextFilter: ProjectFilter) => {
+    setFilter(nextFilter);
+    const firstProject = nextFilter === "All" ? projects[0] : projects.find((project) => project.category === nextFilter);
+    if (firstProject) setActiveProjectId(firstProject.id);
+  };
+
+  const openCaseStudy = (projectId: string) => {
+    setActiveProjectId(projectId);
+    window.setTimeout(() => {
+      const caseStudy = document.getElementById("case-study");
+      caseStudy?.scrollIntoView({ behavior: "smooth", block: "center" });
+      caseStudy?.focus({ preventScroll: true });
+    }, 0);
+  };
 
   const tilt = (event: ReactMouseEvent<HTMLElement>) => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -352,20 +368,24 @@ export default function Portfolio() {
 
       <section className="work sectionShell" id="work">
         <div className="sectionHeading" data-reveal><div><p className="eyebrow">02 / Selected work</p><h2>Built for real pressure.<br /><em>Designed for clarity.</em></h2></div><p>Client-safe case studies focused on the problem, my engineering contribution and the result. Confidential production data stays private.</p></div>
-        <div className="projectFilters" role="group" aria-label="Filter projects">{(["All", "Healthcare", "Government", "Enterprise", "R&D"] as const).map((item) => <button className={filter === item ? "active" : ""} onClick={() => setFilter(item)} key={item}>{item}</button>)}</div>
-        <div className="projectGrid">
+        <div className="projectDirectory"><strong>{visibleProjects.length} project{visibleProjects.length === 1 ? "" : "s"} shown</strong><span>All six projects are available below. Select a category to filter them.</span></div>
+        <div className="projectFilters" role="group" aria-label="Filter projects">{(["All", "Healthcare", "Government", "Enterprise", "R&D"] as const).map((item) => {
+          const count = item === "All" ? projects.length : projects.filter((project) => project.category === item).length;
+          return <button type="button" className={filter === item ? "active" : ""} aria-pressed={filter === item} onClick={() => changeFilter(item)} key={item}>{item}<span>{count}</span></button>;
+        })}</div>
+        <div className="projectGrid" aria-live="polite">
           {visibleProjects.map((project) => (
-            <article className={`projectCard theme-${project.theme} ${activeProjectId === project.id ? "selected" : ""}`} onMouseMove={tilt} onMouseLeave={resetTilt} data-reveal key={project.id}>
+            <article className={`projectCard theme-${project.theme} ${activeProjectId === project.id ? "selected" : ""}`} onMouseMove={tilt} onMouseLeave={resetTilt} key={project.id}>
               <div className="projectGlow" />
               <div className="projectTop"><span>{project.number}</span><small>{project.category}</small></div>
               <ProjectVisual id={project.id} />
               <div className="projectCopy"><p>{project.client}</p><h3>{project.title}</h3><span>{project.summary}</span><div>{project.stack.slice(0, 3).map((item) => <i key={item}>{item}</i>)}</div></div>
-              <button onClick={() => setActiveProjectId(project.id)}>Explore case study <Arrow /></button>
+              <button type="button" aria-controls="case-study" onClick={() => openCaseStudy(project.id)}>Explore case study <Arrow /></button>
             </article>
           ))}
         </div>
 
-        <article className={`caseStudy theme-${activeProject.theme}`} aria-live="polite" data-reveal>
+        <article className={`caseStudy theme-${activeProject.theme}`} id="case-study" tabIndex={-1} aria-live="polite">
           <div className="caseStudyHeader"><div><p>{activeProject.number} / {activeProject.client}</p><h3>{activeProject.title}</h3></div><div className="caseStudyLinks"><a href="https://www.linkedin.com/in/ajlal-haider-khawaja/" target="_blank" rel="noreferrer">LinkedIn profile <Arrow /></a><a href="https://github.com/ajlalkhawaja" target="_blank" rel="noreferrer">GitHub profile <Arrow /></a></div></div>
           <div className="caseStudyGrid"><div><span>THE CHALLENGE</span><p>{activeProject.challenge}</p></div><div><span>MY CONTRIBUTION</span><p>{activeProject.contribution}</p></div><div><span>THE OUTCOME</span><p>{activeProject.outcome}</p></div></div>
           <div className="caseStack">{activeProject.stack.map((item) => <span key={item}>{item}</span>)}</div>
