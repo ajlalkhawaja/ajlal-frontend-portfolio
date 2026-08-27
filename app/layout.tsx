@@ -2,60 +2,19 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://ajlalhaiderkhawaja.com",
-  ),
-  title: {
-    default: "Ajlal Haider | Senior Frontend Engineer",
-    template: "%s | Ajlal Haider",
-  },
-  description:
-    "Ajlal Haider is a Senior Frontend Engineer with 8+ years of experience creating high-stakes React, Angular and TypeScript products for healthcare, government and enterprise teams.",
-  keywords: [
-    "Senior Frontend Engineer",
-    "React Developer",
-    "Angular Developer",
-    "TypeScript",
-    "Abu Dhabi",
-    "Remote Frontend Developer",
-  ],
-  authors: [{ name: "Ajlal Haider Khawaja" }],
+  metadataBase: new URL("https://ajlalhaiderkhawaja.com"),
+  title: "Ajlal Haider — Senior Frontend Engineer",
+  description: "Senior Frontend Engineer in Abu Dhabi specializing in React, Angular, TypeScript, accessible CSS systems and high-impact UAE digital products.",
+  alternates: { canonical: "https://ajlalhaiderkhawaja.com" },
   openGraph: {
-    title: "Ajlal Haider | Senior Frontend Engineer",
-    description:
-      "Interactive React, Angular and TypeScript portfolio: enterprise UI, bilingual government services and healthcare products.",
+    title: "Ajlal Haider — Senior Frontend Engineer",
+    description: "Project-led frontend portfolio spanning healthcare, government, enterprise and client-side OCR.",
+    url: "https://ajlalhaiderkhawaja.com",
     type: "website",
-    locale: "en_US",
-    images: [
-      {
-        url: "/og.png",
-        width: 1200,
-        height: 630,
-        alt: "Ajlal Haider - Senior Frontend Engineer",
-      },
-    ],
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "Ajlal Haider | Senior Frontend Engineer",
-    description:
-      "Interactive React, Angular and TypeScript portfolio for enterprise, healthcare and government products.",
-    images: ["/og.png"],
-  },
-  icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
-  },
+  icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="antialiased">{children}</body>
-    </html>
-  );
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  return <html lang="en"><body>{children}</body></html>;
 }
